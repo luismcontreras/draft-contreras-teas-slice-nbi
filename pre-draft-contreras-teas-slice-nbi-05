@@ -819,6 +819,203 @@ The expected provisioning procedures are:
 </section>
 <!-- End of Section 4.3.  RAN sharing -->
 
+<!-- s-homma: SD-WAN Section -->
+<section title="SD-WAN">
+
+<t>
+SD-WAN is a solution to provide  a virtual overlay network for connecting between customer's sites, (virtual) private cloud, 
+or public cloud/Internet. SD-WAN operates over one or more underlay networks, and enables to offer more differentiated 
+service delivery capabilities. SD-WAN can be esteemed as a type of network slices or can be established over underlay 
+networks provided as network slices. The definitions, specification, service attributes, and framework of SD-WAN is defined 
+in Metro Ethernet Forum (<xref target="MEF-70"/>).   
+</t>
+
+<t>
+SD-WAN forwards traffic based on application flows, and the policies include rules and constraints on the forwarding of 
+the application flows. In SD-WAN, it may be required from the customer to adjust the behaviors based on its needs 
+in near real time. The service provider is required to monitor the performance of the service and modify the forwarding 
+policies based on the real-time telemetry from the underlying network components.
+</t>
+
+    <section title="SD-WAN Structure">
+    <t>
+    SD-WAN has three logical constructs:
+    <list style="symbols">
+        <t>SD-WAN virtual connection</t>
+        <t>SD-WAN virtual connection endpoint</t>
+        <t>SD-WAN UNI</t>
+    </list>
+    </t>
+
+    <t>
+    Several additional components may be visible to the customer. These include:
+    <list style="symbols">
+        <t>Customer network</t>
+        <t>Service provider network</t>
+        <t>Underlay connectivity</t>
+        <t>Tunnel virtual connection</t>
+    </list>
+    </t>
+
+    <t>
+    The following figure shows the overview of SD-WAN structure. In this case, the customer sites are connected 
+    with underlay connectivity#1 and they are also connected to remote private cloud with underlay connectivity#2. 
+    An SD-WAN endpoint is usually located in each customer network site as a CPE or a customer edge, and it allocates 
+    application flow to appropriate underlay connectivity.
+    </t>
+
+<figure anchor="fig_SD-WAN-Overview"
+        title="Overview of SD-WAN Structure">
+  <artwork align="center"><![CDATA[
+  
+                      ,----.
+                     |      \
+                  ,-â€™ Private`--.
+                 |     cloud     |
+                  `---+---+-----â€™
+              - - - - |EP | - - - - -
+            |         +---+          |
+            |           #            |
+ /---------\|           #            |/----------\
+| Customer +--+=========#===========+--+ Customer |
+| Network  |EP|. . . . . . . . . . .|EP| Network  |
+| site A   +--+   Service Provider  +--+ site B   |
+ \---------A|        Network          |A---------/
+           | - - - - - - - - - - - - - |
+           |                           |                     
+       SD-WAN UNI                 SD-WAN UNI
+
+ * Legend
+   . . . : Underlay connectivity#1
+   ===== : Underlay Connectivity#2
+   EP    : SD-WAN Endpoint
+
+ ]]> </artwork>
+</figure>
+
+     <t>
+     SD-WAN may be provided as a network slice, or it is realized on several network slices provided as underlay connectivities. 
+     In the former case, a network slice PE will be mapped to CE in SD-WAN. In the later case, PEs of the provider of underlay 
+     connectivities will behave as network slice PEs. 
+     </t>
+     </section>
+
+     <section title="Connectivity Attributes">
+     <t>
+     SD-WAN defined in MEF-70 has several attributes on its connectivity as below:
+     <list style="hanging">
+        <t hangText="o  SD-WAN Identifier:">
+        the value is a string that is used by the customer and service provider to uniquely identify an SD-WAN connectivity.
+        </t>
+        <t hangText="o  Endpoint list:">
+        the value is a list contains endpoint identifiers and their connected endpoints.
+        </t>
+        <t hangText="o  Service Uptime Objective:">
+        the value is the proportion of time that the connectivity service is working during a given time period.
+        </t>
+        <t hangText="o  Reserved Prefixes:">
+        the values are IP prefixes reserved  by the service provider for  use for SD-WAN within its own network or for distribution 
+        to the customer via DHCP or SLAAC.
+        </t>
+        <t hangText="o  List for Policies:">
+        the value is a list of policies applied to application flows and application flow groups at endpoints. An SD-WAN policy list 
+        contains policy name and list of policy criteria.  Support of the criteria listed below would be required:
+            <list style="hanging">
+                <t hangText="* Encryption:">
+                indicates whether or not the application flow requires encryption
+                </t>
+                <t hangText="*  Public-Private:">
+                indicates whether the application flow can traverse public or private underlay connectivity services (or both).
+                </t>
+                <t hangText="*  Internet-Breakout:">
+                indicates whether the application flow should be forwarded to an Internet destination.
+                </t>
+                <t hangText="*  Billing-Method:">
+                indicate the application flow can be sent over an underlay connectivity service that has usage-based or flat-rate billing.
+                </t>
+                <t hangText="*  Backup:">
+                indicates whether this application flow can use a TVC designated as â€backupâ€.
+                </t>
+                <t hangText="*  Bandwidth:">
+                specifies a rate limit on the application flow.
+                </t>
+            </list>
+        </t>
+        <t hangText="o  List of Application Flow Groups:">
+        the value is a list of application flow groups that application flows can be members of. An application flow group list contains 
+        application flow group name and application flow group policy.
+        </t>
+        <t hangText="o  List of Application Flows:">
+        the value is a list of the application flows that are recognized by the SD-WAN. An application flow list contains application 
+        flow name, list of application flow criteria, and application flow group name. The criteria is listed below:
+            <list style="symbols">
+                <t>Ethertype</t>
+                <t>C-VLAN ID list</t>
+                <t>IPv4 source address</t>
+                <t>IPv4 destination address</t>
+                <t>IPv4 source or destination address</t>
+                <t>IPv4 protocol list</t>
+                <t>IPv6  source address</t>
+                <t>IPv6 destination address</t>
+                <t>IPv6 source or destination address</t>
+                <t>IPv6 next header list</t>
+                <t>TCP/UDP source port list</t>
+                <t>TCP/UDP destination port list</t>
+                <t>Application identifier</t>
+                <t>any</t>
+            </list>
+        </t>
+    </list>
+    </t>
+    </section>
+
+    <section title="SD-WAN Endpoint Attributes">
+    <t>
+    SD-WAN contains some endpoints as boundary nodes between underlay connections and customers sites. <xref target="MEF-70"/> 
+    defines some attributes for SD-WAN endpoints as below:
+    <list style="hanging">
+        <t hangText="o  Endpoint Identifier:">
+        the value is for identification of SD-WAN endpoint for management purposes.
+        </t>
+        <t hangText="o  Endpoint UNI:">
+        the value is for identification of the UNI that the endpoint is associated with.
+        </t>
+        <t hangText="o  Endpoint policy map:">
+        the value is for mapping policies to application flows and application flow groups.
+        </t>
+    </list>
+    </t>
+    </section>
+
+    <section title="SD-WAN UNI Attributes">
+    <t>
+    SD-WAN UNI is a reference point that represents the demarcation between the responsibility of the customer and the responsibility 
+    of the provider. Some attributes for UNI is defined in <xref target="MEF-70"/> as below:
+    <list style="hanging">
+        <t hangText="o  SD-WAN UNI Identifier:">
+        the value is for identification of the UNI for management purposes.
+        </t>
+        <t hangText="o  SD-WAN UNI L2 Interface:">
+        the value describes the underlay L2 interface for the UNI.
+        </t>
+        <t hangText="o  SD-WAN UNI Maximum L2 Frame Size:">
+        the value specifies the maximum length L2 frame that is accepted by the provider.
+        </t>
+        <t hangText="o  SD-WAN UNI IPv4 connection addressing:">
+        the value describes IPv4 connection address mechanisms (e.g., Static or DHCP).
+        </t>
+        <t hangText="o  SD-WAN UNI IPv6 connection addressing:">
+        the value describes IPv6 connection address mechanisms (e.g., DHCP, SLAAC, Static or Link-Local-only). 
+        </t>
+    </list>
+    </t>
+    </section>
+
+</section>
+<!-- End of SD-WAN section -->
+
+	
+	
 <!-- Section 4.4.  Additional use cases -->
 <section title="Additional use cases">
 
@@ -886,6 +1083,15 @@ This draft does not include any IANA considerations
           <date month="April" year="2020"/>
         </front>
         <seriesInfo name="MEF White paper" value=""/>
+      </reference>
+	    
+      <reference anchor="MEF-70">
+        <front>
+          <title>SD-WAN Service Attributes and Services</title>
+          <author/>
+          <date month="July" year="2019"/>
+        </front>
+        <seriesInfo name="MEF-70" value=""/>
       </reference>
 
      <reference anchor="TS23.251">
