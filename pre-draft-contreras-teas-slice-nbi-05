@@ -50,7 +50,7 @@
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
 
-<rfc category="info" docName="draft-contreras-teas-slice-nbi-04"
+<rfc category="info" docName="draft-contreras-teas-slice-nbi-05"
      ipr="trust200902">
   <front>
       <title abbrev="IETF NSC NBI based on use cases">
@@ -111,7 +111,7 @@
        </address>
     </author>
 
-    <date month="February" year="2021" />
+    <date month="July" year="2021" />
 
     <area>Internet</area>
 
