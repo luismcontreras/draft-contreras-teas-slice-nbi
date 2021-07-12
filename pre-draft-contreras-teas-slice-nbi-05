@@ -321,7 +321,128 @@ Despite the translation is an on-going work in 3GPP it seems convenient to start
 of parameters could be required for the IETF network slice NBI.
    </t>
 
+<!-- Section 4.1.1. 3GPP TN -->
+<section title="3GPP network slice">
 
+    <t>
+A 3GPP network slice represents a logical network that provides specific capabilities and network characteristics, supporting the service 
+requirements of one or more network slice customers. The service requirements of each network slice customer are captured into a separate 
+"ServiceProfile" artifact within the network slice class (see Network Slicing NRM fragment in TS 28.541).
+   </t>
+
+    <t>
+A 3GPP network slice spans from 5GNR access nodes to the UPF that terminates the PDU session, i.e. PSA UPF. In this in-slice data path, 
+there are TN segments (e.g. backhaul) that are out of scope of 3GPP management domain. For the provisioning and operation of these TN segments, 
+usually referred to as transport Network Slice Subnets (TN-NSS), the 3GPP management system relies on an external TN management system, which hosts 
+(among other components) the IETF NSC. To proceed with this delegation, the 3GPP management system needs to make available to the TN management system
+the information described in the following sub-sections.
+   </t>
+
+<!-- Section 4.1.1.1 Topology of the TN-NSS -->
+<section title="Topology of the TN-NSS">
+	
+    <t>
+The TN management system needs to know the transport termination/end points to determine the transport resources, either physical or virtual nodes. 
+3GPP management system systems need to provide the transport endpoints of 3GPP managed functions that are part of the RAN-NSS (e.g., gNB-CU-UP, gNB-CU-CP) 
+and CN-NSS (e.g., UPF, AMF), and if applicable further information such as the next-hop router IP address configured in a RAN-NSS or CN-NSS. The TN management 
+system should be able to correlate this with the transport network topology and derive the site or border routers connecting to 3GPP managed functions.
+   </t>
+	
+</section>
+<!-- End of Section 4.1.1.1. Topology of the TN-NSS -->
+	
+	
+	
+<!-- Section 4.1.1.2 Traffic segregation and mapping to S-NSSAI list -->
+<section title="Traffic segregation and mapping to S-NSSAI list">
+	
+    <t>
+As network functions can be shared by many network slices, it will be necessary to segregate the traffic belonging to specific slices on transport interfaces. 
+   </t>
+
+    <t>
+One option for traffic segregation is to assign application endpoints to specific sets of S-NSSAI values. The transport network can map packets to connectivity 
+services based on local remote or remote endpoints, provided that the allocation of S-NSSAI to endpoints is known and exposed, and provided that the application 
+endpoints are visible on the transport layer. The application endpoints visible in a RAN-NSS and CN-NSS are already mapped to a specific set of S-NSSAI. 
+Figure X illustrates an example of this solution, whereby a 3GPP network slice with S-NSSAI=1 is mapped to specific application endpoints (e.g., N3 tunnel 
+endpoint 1) by the access network node. In this example, the TN management system decides to map application endpoints 1 and 2 to the same transport connectivity 
+service A. This mapping is implemented by the site router connecting to the access network node. On the core network slice, a similar mapping is done by the border 
+router. Demultiplexing the packet streams belonging to different transport interfaces is based on regular routing and reachability of endpoint IP addresses.
+   </t>
+
+    <t>
+Despite the simplicity of the above-referred approach, notice that it is not a universal solution as the application endpoint addresses are not always visible to 
+the TN, for example when they are encrypted by IPSec tunnels. In such a case, the application endpoints are not visible to the site router, and thus cannot be used 
+for transport connectivity mappings. To deal with these situations, an alternative solution is to use the concept of logical transport interfaces. A logical transport 
+interface is a virtual interface separate from application endpoints; it can be for example a specific IP address / VLAN combination that corresponds to an IPSec termination 
+point, an identifier (e.g., MPLS label, segment ID) that the TN recognizes, or it can be just a logical interface defined on top of top a physical transport interface. 
+As long as the interface identity can derived from packet headers, the TN nodes can perform the mapping to transport connectivity services. In this regard, it is useful 
+to indicate to the TN which traffic types are carried over an interface (e.g., N3 user plane packets, N2 control plane packets, etc.).
+    </t>	    
+    
+    <t>
+Figure Y illustrates an example on the use of this solution. As seen, logical transport need to be exposed from 3GPP management system to TN management system, 
+so that the latter can create transport network topology and determine the TN resources to support the 3GPP slice. 
+   </t>
+	
+    <t>
+For traffic segregation, though solutions might be valid, 3GPP prefers the second solution: on the use of concept of transport logical interface. The reason is 
+that it does not impose 1:1 mapping between application endpoint and transport interface (allowing for better redundancy) and that it always works, no matter if 
+encryption. To support this solution, the 3GPP has recently extended the Network Slice NRM fragment, including a new Information Object Class called EP_Transport. 
+This class provides a complete characterization of the logical transport interface, including transport level information (i.e., IP address, reachability information, 
+QoS profile) and the set of application endpoints aggregated to this interface. For further information on reachability information and QoS profile, see next subsections. 
+For further details on fields of EP_Transport, see Network Slice NRM fragment in TS 28.541. 
+    </t>
+	
+</section>
+<!-- End of Section 4.1.1.2. Traffic segregation and mapping to S-NSSAI list -->
+	
+
+
+<!-- Section 4.1.1.3 Reachability information -->
+<section title="Reachability information">
+	
+    <t>
+Each physical or logical transport interface will carry the traffic associated with some 3GPP application endpoints that may be using IP addresses separate 
+from the transport interface. These IP addresses must be reachable within the TN-NSS, and hence they need to be advertised to populate forwarding tables. 
+A 3GPP network function can advertise such reachability information by running a dynamic routing protocol towards the next hop router. If that is not possible, 
+it can create association between the reachability data with the logical transport interface and expose it towards the 3GPP and TN management system. This information 
+can be derived from the IP addresses available for application and transport endpoints.
+   </t>
+	
+</section>
+<!-- End of Section 4.1.1.3. Reachability information -->
+	
+
+<!-- Section 4.1.1.4 QoS profiling -->
+<section title="QoS profiling">
+	
+    <t>
+Each TN-NSS may be associated a "TNSliceSubnetProfile", which hosts the SLO requirements (e.g., guaranteed throughput, bounded latency, maximum jitter) that the 
+TN-NSS must support. "TNSliceSubnetProfile" is a 3GPP artifact that result from the decomposition of e2e service requirements ("ServiceProfile" artifact ) into 
+domain-specific service requirements ("RANSliceSubnetProfile", "CNSliceSubnetProfile" and "TNSliceSubnetProfile") applicable to RAN-NSS, CN-NSS and TN-NSS respectively. 
+Unlike "RANSliceSubnetProfile" and "CNSliceSubnetProfile", there is not agreement yet on the specific parameters to be captured by the "TNSliceSubnetProfile". 
+Further work in this regard in the upcoming 3GPP SA5 meetings. 
+   </t>
+
+    <t>
+Upon receiving the "TNSliceSubnetProfile" from the 3GPP management system, the TN management system translates the SLO requirements therein into a QoS profile, 
+which includes applicability and use of DSCPs and other QoS related properties onto the TN-NSS realization. To enable this, each logical interface may have an associated 
+QoS profile. The QoS profile is just a reference to the detailed profile parameters which are logically provisioned on both sides of a logical transport interface.
+   </t>
+
+	
+</section>
+<!-- End of Section 4.1.1.4. QoS profiling -->	
+	
+	
+	
+</section>
+<!-- End of Section 4.1.1. 3GPP TN -->
+
+	
+	
+	
 <!-- Section 4.1.1. Generic network Slice Template -->
 <section title="Generic network Slice Template">
 
