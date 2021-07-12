@@ -229,7 +229,7 @@ spread across the network and providing connectivity toward the final users of t
     <t>
 Under the slicing approach, a IETF network slice customer requests to a IETF network slice controller a slice with certain 
 characteristics and parametrization. Such request it is assumed here to be done through a NBI exposed by the NSC to 
-the customer, as reflected in Fig. 1.
+the customer, as reflected in <xref target="fig:concept"/>.
    </t>
 
       <figure align="center" anchor="fig:concept" title="IETF network slice NBI concept">
@@ -364,7 +364,7 @@ As network functions can be shared by many network slices, it will be necessary 
 One option for traffic segregation is to assign application endpoints to specific sets of S-NSSAI values. The transport network can map packets to connectivity 
 services based on local remote or remote endpoints, provided that the allocation of S-NSSAI to endpoints is known and exposed, and provided that the application 
 endpoints are visible on the transport layer. The application endpoints visible in a RAN-NSS and CN-NSS are already mapped to a specific set of S-NSSAI. 
-Figure X illustrates an example of this solution, whereby a 3GPP network slice with S-NSSAI=1 is mapped to specific application endpoints (e.g., N3 tunnel 
+<xref target="fig:S-NSSAI_mapping"/> illustrates an example of this solution, whereby a 3GPP network slice with S-NSSAI=1 is mapped to specific application endpoints (e.g., N3 tunnel 
 endpoint 1) by the access network node. In this example, the TN management system decides to map application endpoints 1 and 2 to the same transport connectivity 
 service A. This mapping is implemented by the site router connecting to the access network node. On the core network slice, a similar mapping is done by the border 
 router. Demultiplexing the packet streams belonging to different transport interfaces is based on regular routing and reachability of endpoint IP addresses.
@@ -412,7 +412,7 @@ to indicate to the TN which traffic types are carried over an interface (e.g., N
     </t>	    
     
     <t>
-Figure Y illustrates an example on the use of this solution. As seen, logical transport need to be exposed from 3GPP management system to TN management system, 
+<xref target="fig:Logical"/> illustrates an example on the use of this solution. As seen, logical transport need to be exposed from 3GPP management system to TN management system, 
 so that the latter can create transport network topology and determine the TN resources to support the 3GPP slice. 
    </t>
 	
