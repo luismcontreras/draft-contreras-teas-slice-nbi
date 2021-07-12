@@ -370,6 +370,37 @@ service A. This mapping is implemented by the site router connecting to the acce
 router. Demultiplexing the packet streams belonging to different transport interfaces is based on regular routing and reachability of endpoint IP addresses.
    </t>
 
+ <figure align="center" anchor="fig:S-NSSAI_mapping" title="Mapping of S-NSSAI to specific application endpoints">
+        <artwork align="center"><![CDATA[
+                     Transport Interface                      Transport Interface
+                    (App_EP "x" <-> CSR)                      (BR <-> App_EP "x")
+
+      +---------------+          +-------+                +-------+         +---------------+              
+  +---|----+     +----|----+     |       |                |       |     +---|-----+     +---|----+         
+  |NSS-AN 1|-----| App_EP 1|<--->|--     |                |     --|<--->|App_EP 1 |-----|NSS-CN 1|         
+  +---|----+     +----|----+     |  \  +-|---Transport------+  /  |     +---|-----+     +---|----+         
+      |               |          |   --|   Connectivity     |--   |         |               |              
+  +---|----+     +----|----+     |  /  +-|------"A"---------+  \  |     +---|-----+     +---|----+         
+  |NSS-AN 2|-----| App_EP 2|<--->|--     |                |     --|<--->|App_EP 2 |-----|NSS-CN 2|         
+  +---|----+     +----|----+     |       |                |       |     +---|-----+     +---|----+         
+      |               |          |       |                |       |         |               |              
+  +---|----+          |          |       |                |       |         |           +---|----+         
+  |NSS-AN 3|-         |          |       |                |       |         |          -|NSS-CN 3|         
+  +---|----+ \   +----|----+     |     +-----Transport------+  /  |     +---|-----+     +---|----+         
+      |       ---| App_EP 3|<--->|-----|   Connectivity     |-----|<--->|App_EP 3 |---      |              
+  +---|----+ /   +----|----+     |     +--------"B"---------+     |     +---|-----+   \ +---|----+         
+  |NSS-AN 4|-         |          |       |                |       |         |          -|NSS-CN 4|         
+  +---|----+          |          |       |                |       |         |           +---|----+         
+      +---------------+          +-------+                +-------+         +---------------+              
+
+    Access network node(s)   Cell Site Router (CSR)    Border Router (BR)   Core network node(s)              
+
+          S-NSSAI=1: {NSS-AN 1, App_EP 1, Transport Connectivity A, App_EP 1, NSS-CN 1}
+          S-NSSAI=2: {NSS-AN 2, App_EP 2, Transport Connectivity A, App_EP 2, NSS-CN 2}
+          S-NSSAI=4: {NSS-AN 4, App_EP 3, Transport Connectivity B, App_EP 3, NSS-CN 3}
+            ]]></artwork>
+      </figure>
+	
     <t>
 Despite the simplicity of the above-referred approach, notice that it is not a universal solution as the application endpoint addresses are not always visible to 
 the TN, for example when they are encrypted by IPSec tunnels. In such a case, the application endpoints are not visible to the site router, and thus cannot be used 
