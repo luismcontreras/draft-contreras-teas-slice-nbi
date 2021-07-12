@@ -416,6 +416,40 @@ Figure Y illustrates an example on the use of this solution. As seen, logical tr
 so that the latter can create transport network topology and determine the TN resources to support the 3GPP slice. 
    </t>
 	
+<figure align="center" anchor="fig:Logical" title="Logical Transport Interfaces">
+        <artwork align="center"><![CDATA[
+            Logical transport interface,                    Logical transport interface,
+               exposed by RAN NSSMF                             exposed by CN NSSMF     
+
+      +--------+                +-------+              +-------+                +-------+  
+      |        |                |       |              |       |                |       |
+  +---|----+  +-----Logical------+      |              |      +-----Logical------+  +---|----+        
+  |NSS-AN 1|--|    Transport     |-     |              |     -|    Transport     |--|NSS-CN 1|        
+  +---|----+  +---Interface 1----+ \  +----Transport-----+  / +---Interface 1----+  +---|----+        
+      |        |                |   --|   Connectivity   |--   |                |       |             
+  +---|----+  +-----Logical------+ /  +--------"A"-------+  \ +-----Logical------+  +---|----+        
+  |NSS-AN 2|--|    Transport     |-     |              |     -|    Transport     |--|NSS-CN 2|        
+  +---|----+  +---Interface 2----+      |              |      +---Interface 1----+  +---|----+        
+      |        |                |       |              |       |                |       |     
+  +---|----+   |                |       |              |       |                |   +---|----+
+  |NSS-AN 3|-  |                |       |              |       |                |  -|NSS-CN 3|
+  +---|----+ \+-----Logical------+    +----Transport----+    +-----Logical-------+/ +---|----+
+      |       |    Transport     |----|   Connectivity  |----|    Transport      |      |     
+  +---|----+ /+---Interface 2----+    +--------"B"------+    +---Interface 1-----+\ +---|----+
+  |NSS-AN 4|-  |                |       |              |       |                |  -|NSS-CN 4|
+  +---|----+   |                |       |              |       |                |   +---|----+
+      |        |                |       |              |       |                |       | 
+      +--------+                +-------+              +-------+                +-------+   
+ 
+  Access network node(s)   Cell Site Router (CSR)   Border Router (BR)      Core network node(s)
+ 
+ 
+S-NSSAI=1: {NSS-AN 1, Logical Transport Interface 1, Transport Connectivity A, Logical Transport Interface 1, NSS-CN 1}
+S-NSSAI=2: {NSS-AN 2, Logical Transport Interface 2, Transport Connectivity A, Logical Transport Interface 2, NSS-CN 2}
+S-NSSAI=4: {NSS-AN 4, Logical Transport Interface 3, Transport Connectivity B, Logical Transport Interface 3, NSS-CN 4} 
+            ]]></artwork>
+      </figure>
+	
     <t>
 For traffic segregation, though solutions might be valid, 3GPP prefers the second solution: on the use of concept of transport logical interface. The reason is 
 that it does not impose 1:1 mapping between application endpoint and transport interface (allowing for better redundancy) and that it always works, no matter if 
